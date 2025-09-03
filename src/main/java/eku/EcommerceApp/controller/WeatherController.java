@@ -2,6 +2,9 @@ package eku.EcommerceApp.controller;
 
 import eku.EcommerceApp.model.DtoNew;
 import eku.EcommerceApp.model.DtoWeather;
+import eku.EcommerceApp.service.ApiKeyService;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,12 +16,25 @@ import java.util.Map;
 @RequestMapping("/api/weather")
 public class WeatherController {
 
-    private static final String API_KEY = "dceec579045f4891b0b100743252808";
+    @Autowired
+    ApiKeyService apiKeyService;
+
+//    private String apiKey;
+
+//    @PostConstruct
+//    public void init() {
+//        this.apiKey = apiKeyService.getApiKey("weatherapi");
+//    }
+//    private static final String API_KEY = "dceec579045f4891b0b100743252808";
+
+
 
     @GetMapping("/{city}")
     public Object getWeather(@PathVariable String city) {
 
-        String url = "https://api.weatherapi.com/v1/current.json?key=" + API_KEY + "&q=" + city;
+        String apiKey = apiKeyService.getApiKey("weatherapi");
+
+        String url = "https://api.weatherapi.com/v1/current.json?key=" + apiKey + "&q=" + city;
         RestTemplate restTemplate = new RestTemplate();
 
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
@@ -38,7 +54,9 @@ public class WeatherController {
         String region = (String) location.get("region");
         String country = (String) location.get("country");
 
-        return response;
+        DtoWeather dto=new DtoWeather(name,region,country,d);
+
+        return dto;
 
 
     }
