@@ -52,7 +52,7 @@ public class UserService {
         return repo.findById(id);
     }
 
-    @Cacheable("byName")
+   // @Cacheable("byName")
     public Optional<Users> findByUser_name(String user_name) {
         System.out.println(" Fetching From User Table DB...");
         return  repo.findByUser_name(user_name);
